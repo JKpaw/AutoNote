@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres # this stays exactly as it was
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: local
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+  app: # NEW - this is your app
+    build:
+      dockerfile: .dev.dockerfile # which dockerfile should it use?
+    ports:
+      - 5173:5173 # what port do you want to access it on in your browser?
+    depends_on:
+      - db # which service must start first?
+    env_file:
+      - .env.dev
+
+volumes:
+  pgdata:
